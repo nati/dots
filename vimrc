@@ -2,24 +2,20 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-Bundle 'Align'
+set t_Co=256
 Bundle 'YankRing.vim'
-Bundle 'minibufexpl.vim'
-Bundle 'minibufexpl.vim'
-Bundle 'neocomplcache'
 Bundle 'The-NERD-Commenter'
-Bundle 'The-NERD-tree'
 Bundle 'Pydiction'
 Bundle 'Smooth-Scroll'
 Bundle 'altercmd'
-Bundle 'quickrun.vim'
-Bundle 'eregex.vim'
-Bundle 'EasyMotion'
 Bundle 'yuroyoro/vim-python'
 Bundle 'gma9rik/vundle'
 Bundle 'fugitive.vim'
 Bundle 'https://github.com/m4i/YankRingSync.git'
-
+Bundle 'surround.vim'
+Bundle 'git://github.com/nati/nerdtree.git'
+Bundle 'https://github.com/nati/neocomplcache.git'
+Bundle 'https://github.com/nvie/vim-flake8.git'
 "-------------------------------------------------------------------------------
 " 基本設定 Basics
 "-------------------------------------------------------------------------------
@@ -40,16 +36,12 @@ set showmode                     " 現在のモードを表示
 set viminfo='50,<1000,s100,\"50  " viminfoファイルの設定
 set modelines=0                  " モードラインは無効
 
-" OSのクリップボードを使用する
-set clipboard+=unnamed
 " ターミナルでマウスを使用できるようにする
 set mouse=a
 set guioptions+=a
 set ttymouse=xterm2
 
-"ヤンクした文字は、システムのクリップボードに入れる"
-set clipboard=unnamed
-
+set clipboard=unnamedplus,unnamed
 set helpfile=$VIMRUNTIME/doc/help.txt
 
 " ファイルタイプ判定をon
@@ -229,19 +221,6 @@ vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 " 移動設定 Move
 "-------------------------------------------------------------------------------
 
-" カーソルを表示行で移動する。論理行移動は<C-n>,<C-p>
-nnoremap h <Left>
-nnoremap j gj
-nnoremap k gk
-nnoremap l <Right>
-nnoremap <Down> gj
-nnoremap <Up>   gk
-
-" 0, 9で行頭、行末へ
-nmap 1 0
-nmap 0 ^
-nmap 9 $
-
 " spaceで次のbufferへ。back-spaceで前のbufferへ
 nmap <Space><Space> ;MBEbn<CR>
 nmap <BS><BS> ;MBEbp<CR>
@@ -254,35 +233,10 @@ map <kMinus> <C-W>-
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
 " CTRL-hjklでウィンドウ移動
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <C-h> <C-w>h
-
-" git-diff-aware version of gf commands.
-" http://labs.timedia.co.jp/2011/04/git-diff-aware-gf-commands-for-vim.html
-nnoremap <expr> gf  <SID>do_git_diff_aware_gf('gf')
-nnoremap <expr> gF  <SID>do_git_diff_aware_gf('gF')
-nnoremap <expr> <C-w>f  <SID>do_git_diff_aware_gf('<C-w>f')
-nnoremap <expr> <C-w><C-f>  <SID>do_git_diff_aware_gf('<C-w><C-f>')
-nnoremap <expr> <C-w>F  <SID>do_git_diff_aware_gf('<C-w>F')
-nnoremap <expr> <C-w>gf  <SID>do_git_diff_aware_gf('<C-w>gf')
-nnoremap <expr> <C-w>gF  <SID>do_git_diff_aware_gf('<C-w>gF')
-
-function! s:do_git_diff_aware_gf(command)
-  let target_path = expand('<cfile>')
-  if target_path =~# '^[ab]/'  " with a peculiar prefix of git-diff(1)?
-    if filereadable(target_path) || isdirectory(target_path)
-      return a:command
-    else
-      " BUGS: Side effect - Cursor position is changed.
-      let [_, c] = searchpos('\f\+', 'cenW')
-      return c . '|' . 'v' . (len(target_path) - 2 - 1) . 'h' . a:command
-    endif
-  else
-    return a:command
-  endif
-endfunction
+"nnoremap <C-j> <C-w>j
+"nnoremap <C-k> <C-w>k
+"nnoremap <C-l> <C-w>l
+"nnoremap <C-h> <C-w>h
 
 "-------------------------------------------------------------------------------
 " エンコーディング関連 Encoding
@@ -377,7 +331,7 @@ command! Sjis Cp932
 
 " ターミナルタイプによるカラー設定
 if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color"
- set t_Co=16
+ set t_Co=256
  set t_Sf=[3%dm
  set t_Sb=[4%dm
 elseif &term =~ "xterm-color"
@@ -385,7 +339,7 @@ elseif &term =~ "xterm-color"
  set t_Sf=[3%dm
  set t_Sb=[4%dm
 endif
-
+colorscheme molokai
 "ポップアップメニューのカラーを設定
 "hi Pmenu guibg=#666666
 "hi PmenuSel guibg=#8cd0d3 guifg=#666666
@@ -400,11 +354,11 @@ hi PmenuSel ctermbg=blue ctermfg=white
 hi PmenuSbar ctermbg=0 ctermfg=9
 
 "-------------------------------------------------------------------------------
-" 編集関連 Edit
+" 編集関連 Edit.
 "-------------------------------------------------------------------------------
 
 " Tabキーを空白に変換
-set expandtab
+" set expandtab
 
 " コンマの後に自動的にスペースを挿入
 inoremap , ,<Space>
@@ -419,17 +373,11 @@ inoremap <C-u>  <C-g>u<C-u>
 inoremap <C-w>  <C-g>u<C-w>
 
 " :Ptでインデントモード切替
-command! Pt :set paste!
-
-" y9で行末までヤンク
-nmap y9 y$
-" y0で行頭までヤンク
-nmap y0 y^
 
 " 保存時に行末の空白を除去する
 autocmd BufWritePre * :%s/\s\+$//ge
 " 保存時にtabをスペースに変換する
-autocmd BufWritePre * :%s/\t/  /ge
+"autocmd BufWritePre * :%s/\t/  /ge
 
 "-------------------------------------------------------------------------------
 " その他 Misc
@@ -523,7 +471,7 @@ let g:neocomplcache_min_syntax_length = 3
 " neocomplcacheを自動的にロックするバッファ名のパターン
 let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 " -入力による候補番号の表示
-let g:neocomplcache_enable_quick_match = 1
+"let g:neocomplcache_enable_quick_match = 1
 " 補完候補の一番先頭を選択状態にする(AutoComplPopと似た動作)
 let g:neocomplcache_enable_auto_select = 1
 
@@ -592,7 +540,7 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
-autocmd FileType ruby set omnifunc=rubycomplete#Complete
+autocmd FileType ruby set omnifufnc=rubycomplete#Complete
 
 " Enable heavy omni completion.
 if !exists('g:neocomplcache_omni_patterns')
@@ -600,7 +548,6 @@ if !exists('g:neocomplcache_omni_patterns')
 endif
 let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-
 
 
 "------------------------------------
@@ -613,4 +560,57 @@ let g:quickrun_config = {}
 "------------------------------------
 let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 
-noremap <C-t> :NERDTreeToggle<Enter>
+nnoremap <C-t> :NERDTreeToggle<Enter>
+inoremap <C-t> <ESC>:NERDTreeToggle<Enter>
+
+autocmd VimEnter * NERDTree
+autocmd VimEnter * wincmd p
+
+"------------------------------------
+" surround.vim
+"------------------------------------
+" s, ssで選択範囲を指定文字でくくる
+nmap s <Plug>Ysurround
+nmap ss <Plug>Yssurround
+let g:surround_{char2nr('e')} = "begin \r end"
+let g:surround_{char2nr('d')} = "do \r end"
+let g:surround_{char2nr("-")} = ":\r"
+
+let g:SrcExpl_RefreshTime = 1
+let g:SrcExpl_UpdateTags = 1
+let g:gist_post_private = 1
+
+""" unite.vim
+" 入力モードで開始する
+" let g:unite_enable_start_insert=1
+" バッファ一覧
+nnoremap <silent> ,ub :<C-u>Unite buffer<CR>
+" ファイル一覧
+nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+" レジスタ一覧
+nnoremap <silent> ,ur :<C-u>Unite -buffer-name=register register<CR>
+" 最近使用したファイル一覧
+nnoremap <silent> ,um :<C-u>Unite file_mru<CR>
+" 常用セット
+nnoremap <silent> ,uu :<C-u>Unite buffer file_mru<CR>
+" 全部乗せ
+nnoremap <silent> ,ua :<C-u>UniteWithBufferDir -buffer-name=files buffer file_mru bookmark file<CR>
+
+" ウィンドウを分割して開く
+au FileType unite nnoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+au FileType unite inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+" ウィンドウを縦に分割して開く
+au FileType unite nnoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+au FileType unite inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+" ESCキーを2回押すと終了する
+au FileType unite nnoremap <silent> <buffer> <ESC><ESC> q
+au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>q
+
+" vimshell setting
+let g:vimshell_interactive_update_time = 10
+let g:vimshell_prompt = $USERNAME."% "
+
+" vimshell map
+nnoremap <silent> vs :VimShell<CR>
+nnoremap <silent> vsc :VimShellCreate<CR>
+nnoremap <silent> vp :VimShellPop<CR>

@@ -1,0 +1,1 @@
+launchctl load pbcopy.plist
