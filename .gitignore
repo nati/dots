@@ -19,5 +19,4 @@ Session.vim
 .zsh_alias
 samples
 
-.vim/bundle/
-
+vim/bundle/
