@@ -16,13 +16,15 @@ NeoBundle 'tomasr/molokai'
 NeoBundle 'alpaca-tc/alpaca_powertabline'
 NeoBundle 'mattn/webapi-vim'
 NeoBundle 'mattn/vimplenote-vim'
+NeoBundle 'scrooloose/syntastic'
+NeoBundle 'vim-scripts/gtags.vim'
 
 set rtp+=$GOROOT/misc/vim
 exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
+exe "set rtp+=".globpath($GOPATH, "src/github.com/golang/lint/misc/vim")
 set completeopt=menu,preview
 
 NeoBundle 'Blackrush/vim-gocode',  {"autoload": {"filetypes": ['go']}}
-auto BufWritePre *.go Fmt
 
 
 call neobundle#end()
@@ -459,3 +461,22 @@ endif
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
+
+"----------------------------------------------------
+"" GNU GLOBAL(gtags)
+"----------------------------------------------------
+
+nmap <C-q> <C-w><C-w><C-w>q
+nmap <C-g> :Gtags -g
+nmap <C-l> :Gtags -f %<CR>
+nmap <C-j> :Gtags <C-r><C-w><CR>
+nmap <C-k> :Gtags -r <C-r><C-w><CR>
+nmap <C-n> :cn<CR>
+nmap <C-p> :cp<CR>
+
+"----------------------------------------------------
+" Go config
+"----------------------------------------------------
+"
+let g:syntastic_go_checkers = ['go',  'golint']
+auto BufWritePre *.go Fmt
