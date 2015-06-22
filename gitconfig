@@ -1,0 +1,50 @@
+[include]
+    path = ~/.gitconfig.local
+[user]
+    name = Nachi Ueno
+    email = nati.ueno@gmail.com
+[core]
+    editor = vim
+[color]
+    ui = auto
+[diff]
+    external = ~/git_vimdiff.sh
+[pager]
+    diff =
+[alias]
+    co = checkout
+    ci = commit
+    cia = commit -a
+    cm = commit --amend --no-edit
+    cam = commit -a --amend --no-edit
+    s = status
+    st = stash
+    stp = stash pop
+    a = add
+    un = reset HEAD
+    cb = checkout -b
+    d = diff
+    dc = diff --cached
+    b = branch
+    ba = branch -a
+    lo = log
+    la = log --oneline
+    l = log -10 --oneline
+    f = fetch --prune
+    pl = !git pull origin `git rev-parse --abbrev-ref HEAD`
+    plo = pull origin
+    plom = pull origin master
+    ps = push
+    pso = push origin
+    psfo = push -f origin
+    psom = push origin master
+    r = rebase
+    ta = log --oneline --all --decorate --graph
+    t = log -10 --oneline --all --decorate --graph
+    p = !git push origin `git rev-parse --abbrev-ref HEAD`
+    delete-merged-branch = !git branch --merged | grep -v \\* | grep -v master | xargs -I % git branch -d %
+[mergetool]
+    prompt = false
+    keepBackup = false
+[merge]
+    tool = vimdiff

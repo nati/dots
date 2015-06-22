@@ -4,9 +4,12 @@ PWD=`pwd`
 rm ~/.vimrc
 rm ~/.tmux.conf
 rm ~/.vim
+rm ~/.gitconfig
 ln -s $PWD/vimrc ~/.vimrc
 ln -s $PWD/tmux.conf ~/.tmux.conf
 ln -s $PWD/vim ~/.vim
+ln -s $PWD/gitconfig ~/.gitconfig
+ln -s $PWD/git_vimdiff.sh ~/git_vimdiff.sh
 
 # need to add powerline configuraion
 # http://qiita.com/alpaca_taichou/items/ab70f914a6a577e25d70
