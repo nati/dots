@@ -14,4 +14,14 @@ ln -s $PWD/git_vimdiff.sh ~/git_vimdiff.sh
 # need to add powerline configuraion
 # http://qiita.com/alpaca_taichou/items/ab70f914a6a577e25d70
 curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh | sh
-sudo update-alternatives --set editor /usr/bin/vim.basic
+
+if [ "$(uname)" == 'Darwin' ]; then
+	OS='Mac'
+	cp keybindings.json "/Users/$USER/Library/Application\ Support/Code/User"
+elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+	OS='Linux'
+	sudo update-alternatives --set editor /usr/bin/vim.basic
+else
+	echo "Your platform ($(uname -a)) is not supported."
+	exit 1
+fi
