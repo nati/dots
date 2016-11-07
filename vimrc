@@ -482,3 +482,6 @@ let g:syntastic_go_checkers = ['go',  'golint']
 let g:gofmt_command = 'goimports'
 
 auto BufWritePre *.go :Fmt
+
+
+autocmd Filetype yaml setlocal tabstop=2

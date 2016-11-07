@@ -1,8 +1,8 @@
 [include]
     path = ~/.gitconfig.local
 [user]
-    name = Nachi Ueno
-    email = nati.ueno@gmail.com
+	name = Nachi Ueno
+	email = nati.ueno@gmail.com
 [core]
     editor = vim
 [color]
@@ -46,3 +46,7 @@
     keepBackup = false
 [merge]
     tool = vimdiff
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
