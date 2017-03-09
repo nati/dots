@@ -1,0 +1,6 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "window.zoomLevel": 1,
+    "editor.minimap.enabled": true,
+    "editor.dragAndDrop": true
+}

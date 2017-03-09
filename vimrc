@@ -1,42 +1,43 @@
-"---------------------------
-" Start Neobundle Settings.
-"---------------------------
-filetype off
-set runtimepath+=~/.vim/bundle/neobundle.vim/
+if &compatible
+  set nocompatible               " Be iMproved
+endif
 
 " Required:
-call neobundle#begin(expand('~/.vim/bundle/'))
+set runtimepath+=/Users/nueno/vim/repos/github.com/Shougo/dein.vim
 
-NeoBundleFetch 'Shougo/neobundle.vim'
+" Required:
+if dein#load_state('/Users/nueno/vim')
+  call dein#begin('/Users/nueno/vim')
 
-NeoBundle 'Shougo/neocomplete'
-NeoBundle 'nati/nerdtree'
-NeoBundle 'nvie/vim-flake8'
-NeoBundle 'tomasr/molokai'
-NeoBundle 'alpaca-tc/alpaca_powertabline'
-NeoBundle 'mattn/webapi-vim'
-NeoBundle 'mattn/vimplenote-vim'
-NeoBundle 'scrooloose/syntastic'
-NeoBundle 'vim-scripts/gtags.vim'
+  " Let dein manage dein
+  " Required:
+  call dein#add('/Users/nueno/vim/repos/github.com/Shougo/dein.vim')
 
-set rtp+=$GOROOT/misc/vim
-exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
-exe "set rtp+=".globpath($GOPATH, "src/github.com/golang/lint/misc/vim")
-set completeopt=menu,preview
+  " Add or remove your plugins here:
+  call dein#add('Shougo/neosnippet.vim')
+  call dein#add('Shougo/neocomplete.vim')
+  call dein#add('Shougo/neosnippet-snippets')
 
-NeoBundle 'Blackrush/vim-gocode',  {"autoload": {"filetypes": ['go']}}
-
-
-call neobundle#end()
+  " You can specify revision/branch/tag.
+  call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+  call dein#add('tomasr/molokai')
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('fatih/vim-go')
+  " Required:
+  call dein#end()
+  call dein#save_state()
+endif
 
 " Required:
 filetype plugin indent on
+syntax enable
 
-NeoBundleCheck
+" If you want to install not installed plugins on startup.
+"if dein#check_install()
+"  call dein#install()
+"endif
 
-"-------------------------
-" End Neobundle Settings.
-"-------------------------
+"End dein Scripts-------------------------
 
 let mapleader = ","              " キーマップリーダー
 set scrolloff=5                  " スクロール時の余白確保
@@ -69,55 +70,6 @@ set helpfile=$VIMRUNTIME/doc/help.txt
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 
 colorscheme molokai
-
-"-------------------------------------------------------------------------------
-" Flake8
-"-------------------------------------------------------------------------------
-let g:flake8_ignore="E126,E127,E128,H307"
-autocmd BufWritePost *.py call Flake8()
-
-"-------------------------------------------------------------------------------
-" NERD Tree
-"-------------------------------------------------------------------------------
-nnoremap <C-t> :NERDTreeToggle<Enter>
-inoremap <C-t> <ESC>:NERDTreeToggle<Enter>
-
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
-
-"自動的に QuickFix リストを表示する
-autocmd QuickfixCmdPost make,grep,grepadd,vimgrep,vimgrepadd cwin
-autocmd QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lvimgrepadd lwin
-
-function! GetB()
-  let c = matchstr(getline('.'), '.', col('.') - 1)
-  let c = iconv(c, &enc, &fenc)
-  return String2Hex(c)
-endfunction
-" help eval-examples
-" The function Nr2Hex() returns the Hex string of a number.
-func! Nr2Hex(nr)
-  let n = a:nr
-  let r = ""
-  while n
-    let r = '0123456789ABCDEF'[n % 16] . r
-    let n = n / 16
-  endwhile
-  return r
-endfunc
-" The function String2Hex() converts each character in a string to a two
-" character Hex string.
-func! String2Hex(str)
-  let out = ''
-  let ix = 0
-  while ix < strlen(a:str)
-    let out = out . Nr2Hex(char2nr(a:str[ix]))
-    let ix = ix + 1
-  endwhile
-  return out
-endfunc
-
-
 "-------------------------------------------------------------------------------
 " 表示 Apperance
 "-------------------------------------------------------------------------------
@@ -366,122 +318,5 @@ autocmd BufWritePre * :%s/\s\+$//ge
 " 保存時にtabをスペースに変換する
 "autocmd BufWritePre * :%s/\t/  /ge
 
-"------------------------------------
-" Fugitive.vim
-"------------------------------------
-nnoremap <Space>gd :<C-u>Gdiff<Enter>
-nnoremap <Space>gs :<C-u>Gstatus<Enter>
-nnoremap <Space>gl :<C-u>Glog<Enter>
-nnoremap <Space>ga :<C-u>Gwrite<Enter>
-nnoremap <Space>gc :<C-u>Gcommit<Enter>
-nnoremap <Space>gC :<C-u>Git commit --amend<Enter>
-nnoremap <Space>gb :<C-u>Gblame<Enter>
-
-"Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 3
-let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-" Define dictionary.
-let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scheme' : $HOME.'/.gosh_completions'
-        \ }
-
-" Define keyword.
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-" Plugin key-mappings.
-inoremap <expr><C-g>     neocomplete#undo_completion()
-inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return neocomplete#close_popup() . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplete#close_popup()
-inoremap <expr><C-e>  neocomplete#cancel_popup()
-" Close popup by <Space>.
-"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-
-" For cursor moving in insert mode(Not recommended)
-"inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-"inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-"inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-"inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
-" Or set this.
-"let g:neocomplete#enable_cursor_hold_i = 1
-" Or set this.
-"let g:neocomplete#enable_insert_char_pre = 1
-
-" AutoComplPop like behavior.
-"let g:neocomplete#enable_auto_select = 1
-
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1
-"let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" Enable heavy omni completion.
-if !exists('g:neocomplete#sources#omni#input_patterns')
-  let g:neocomplete#sources#omni#input_patterns = {}
-endif
-"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-" For perlomni.vim setting.
-" https://github.com/c9s/perlomni.vim
-let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
-
-"----------------------------------------------------
-"" GNU GLOBAL(gtags)
-"----------------------------------------------------
-
-nmap <C-q> <C-w><C-w><C-w>q
-nmap <C-g> :Gtags -g
-nmap <C-l> :Gtags -f %<CR>
-nmap <C-j> :Gtags <C-r><C-w><CR>
-nmap <C-k> :Gtags -r <C-r><C-w><CR>
-nmap <C-n> :cn<CR>
-nmap <C-p> :cp<CR>
-
-"----------------------------------------------------
-" Go config
-"----------------------------------------------------
-"
-let g:syntastic_go_checkers = ['go',  'golint']
-let g:gofmt_command = 'goimports'
-
-auto BufWritePre *.go :Fmt
-
-
-autocmd Filetype yaml setlocal tabstop=2
+" Nerd Tree
+autocmd VimEnter * execute 'NERDTree'
