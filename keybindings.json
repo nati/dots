@@ -26,5 +26,13 @@
     { "key": "ctrl+k",               "command": "selectPrevQuickFix",
                                      "when": "editorFocus && quickFixWidgetVisible" },    
     { "key": "ctrl+k",               "command": "selectPrevSuggestion",
-                                     "when": "editorTextFocus && suggestWidgetVisible" }  
+                                     "when": "editorTextFocus && suggestWidgetVisible" },
+    { "key": "cmd+shift+r",  "command": "extension.runner.start",
+                              "when": "editorTextFocus" },
+    { "key": "cmd+r",                "command": "workbench.action.openRecent" },
+    { "key": "cmd+m",                "command": "markdown.showPreviewToSide",
+                                     "when": "editorFocus" },
+    { "key": "cmd+shift+t",  "command": "extension.runner.stop" },
+    { "key": "cmd+right",    "command": "workbench.action.terminal.focusNext" },
+    { "key": "cmd+left",    "command": "workbench.action.terminal.focusPrevious" }
 ]
